@@ -1,0 +1,1 @@
+from lexcomp.model import Model
