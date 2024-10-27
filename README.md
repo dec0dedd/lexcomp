@@ -8,12 +8,10 @@ LexComp is a straightforward Python library designed to measure text complexity 
 from lexcomp import Model
 
 text1 = """
-everyday i get up at 8 a clock. I always turn my music on. To have a nice day. Firstly, i take my shower. In a second time I breakfast. Then i go to school. But that's depend about my timetable. I don't begin at 8h30 everday so sometimes I watch tv
+Amidst the complexities of modern society, technology emerges as a transformative force, reshaping how we acquire knowledge and communicate. Its pervasive influence fosters an environment ripe for innovation, allowing individuals to transcend geographical barriers and engage in collaborative endeavors. As we navigate this digital landscape, the imperative to harness these advancements responsibly becomes increasingly paramount, ensuring that the pursuit of progress aligns with ethical considerations and societal well-being.
 """
 
-text2 = """
-My answer to this question is yes, famous people do have a right to privacy. Artists, actors, musicians, politicians (and so on) don't need every single aspects of their life known and shown to the whole world. The only thing that should matter is if these people do their job right. As long as they don't break any rule, why should we know who they married and what their children look like or if they cheated,... Furthermore, media making money by invading privacy are often terrible. Examples of this are tabloids or reality show like the Kardashians. That is not good TV. It's getting harder and harder for celebrities to keep their private life private, with the increase of social media and everybody owning a camera phone. We should put ourselves in their shoes and ask us how we would like to be treated if we were in their place.
-"""
+text2 = "Technology helps us learn and talk. It lets friends work together, even if they are far away. We should use technology nicely so it helps everyone."
 
 mdl = Model()
 print(f"First text's complexity: {mdl.predict_text(text1)[0]}")
@@ -25,3 +23,8 @@ The output should be
 First text's complexity: 0.03551881
 Second text's complexity: 0.5091553
 ```
+
+## Data sources
+1. CommonLit corpus - [source](https://github.com/scrosseye/CLEAR-Corpus)
+2. OneStopEnglish corpus - [source](https://github.com/nishkalavallabhi/OneStopEnglishCorpus)
+3. CEFR-based Short Answer corpus - [source](https://cental.uclouvain.be/team/atack/cefr-asag/)
