@@ -5,8 +5,12 @@ import textstat as ts
 
 import pandas as pd
 import lexicalrichness as lex
+import numpy as np
 
 fpath = os.path.dirname(os.path.realpath(__file__))
+
+def logistic(data, k, mid):
+    return np.exp(k*(data-mid))/(1+np.exp(k*(data-mid)))
 
 class Model():
     model = None
@@ -19,6 +23,8 @@ class Model():
     
     def _preprocess(self, text):
         df = pd.DataFrame(data={"text": text}, index=[0])
+
+        # Syntactic features
         df['flesch_reading'] = df['text'].apply(ts.flesch_reading_ease).astype('float64')
         df['dale_chall'] = df['text'].apply(ts.dale_chall_readability_score).astype('float64')
         df['coleman_liau'] = df['text'].apply(ts.coleman_liau_index).astype('float64')
@@ -41,7 +47,7 @@ class Model():
         return df
     
     def predict(self, X):
-        return self.model.predict(X)
+        return logistic(self.model.predict(X), 10, 0.5)
     
     def predict_text(self, text):
         return self.predict(self._preprocess(text))

@@ -15,7 +15,7 @@ df['id'] = pd.RangeIndex(start=0, stop=df.shape[0])
 df.set_index('id', inplace=True)
 df.drop(columns=['text'], inplace=True)
 
-df.to_csv('merged_clean_train.csv')
+df.to_csv('merged_clean.csv')
 
 print(df)
 print(df.dtypes)
