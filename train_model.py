@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 import joblib
 
-X = pd.read_csv('merged_clean.csv', index_col='id')
+X = pd.read_csv('vectorized_clean.csv', index_col='id')
 y = X.pop('target')
 
 X_train, X_test, y_train, y_test = train_test_split(

@@ -13,7 +13,6 @@ for subdir, dirs, files in os.walk(os.path.join(cdir, 'data_train')):
 
 df['id'] = pd.RangeIndex(start=0, stop=df.shape[0])
 df.set_index('id', inplace=True)
-df.drop(columns=['text'], inplace=True)
 
 df.to_csv('merged_clean.csv')
 
