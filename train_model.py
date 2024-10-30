@@ -2,11 +2,16 @@ import pandas as pd
 
 from xgboost import XGBRegressor
 from sklearn.model_selection import train_test_split
+from lexcomp import Model
 
 import joblib
 
-X = pd.read_csv('vectorized_clean.csv', index_col='id')
+X = pd.read_csv('merged_clean.csv', index_col='id')
 y = X.pop('target')
+
+xgb = Model()
+
+X = xgb._preprocess(X).drop(columns=['text'])
 
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.1, random_state=42

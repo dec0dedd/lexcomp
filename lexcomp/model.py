@@ -13,10 +13,10 @@ from tqdm import tqdm
 
 fpath = os.path.dirname(os.path.realpath(__file__))
 
-tokenizer
 
 def logistic(data, k, mid):
     return np.exp(k*(data-mid))/(1+np.exp(k*(data-mid)))
+
 
 class Model():
     model = None
@@ -27,7 +27,7 @@ class Model():
         except FileNotFoundError:
             raise FileNotFoundError("Could not find model.joblib file!")
     
-    def _get_syntactic(self, text):
+    def _get_syntactic(self, text: str):
         df = pd.DataFrame(data={'text': text}, index=[0])
         df['flesch_reading'] = df['text'].apply(ts.flesch_reading_ease).astype('float64')
         df['dale_chall'] = df['text'].apply(ts.dale_chall_readability_score).astype('float64')
@@ -43,8 +43,8 @@ class Model():
         df.drop(columns=['text'], inplace=True)
 
         return df
-    
-    def _get_lexical(self, text):
+
+    def _get_lexical(self, text: str):
         df = pd.DataFrame(data={'text': text}, index=[0])
 
         df['ttr'] = df['text'].apply(lambda x: lex.LexicalRichness(x).ttr)
@@ -55,8 +55,8 @@ class Model():
         df.drop(columns=['text'], inplace=True)
 
         return df
-    
-    def _preprocess(self, text):
+
+    def _preprocess_text(self, text: str) -> pd.DataFrame:
         df = pd.DataFrame(data={"text": text}, index=[0])
 
         df = pd.concat([df, self._get_syntactic(text), self._get_lexical(text)], axis=1)
@@ -66,21 +66,33 @@ class Model():
 
         df.columns = df.columns.astype(str)
 
-        df.drop(columns=['text'], inplace=True)
-
         return df
-    
-    def predict(self, X):
+
+    def _preprocess(self, X: pd.DataFrame) -> pd.DataFrame:
         res = pd.DataFrame()
+
+        sz = X.shape[0]
+
+        for i in tqdm(range(sz)):
+            res = pd.concat([res, self._preprocess_text(X['text'].iloc[i])])
+
+        res['id'] = pd.RangeIndex(start=0, stop=res.shape[0]).astype(str)
+        res.set_index('id', inplace=True)
+
+        return res
+
+    def predict(self, X: pd.DataFrame) -> np.ndarray:
+        res = pd.DataFrame()
+
         for txt in X['text']:
-            res = pd.concat([res, self._preprocess(txt)])
+            res = pd.concat([res, self._preprocess_text(txt).drop(columns=['text'])])
         booster_cols = self.model.get_booster().feature_names
         return logistic(self.model.predict(res[booster_cols]), 10, 0.5)
-    
-    def predict_text(self, text):
-        return self.predict(self._preprocess(text))
-    
-    def vectorize(self, X) -> pd.DataFrame:
+
+    def predict_text(self, text: str):
+        return self.predict(self._preprocess_text(text).drop(columns=['text']))
+
+    def vectorize(self, X: pd.DataFrame) -> pd.DataFrame:
         emb = pd.DataFrame()
 
         sz = X.shape[0]
@@ -93,10 +105,10 @@ class Model():
 
         return emb
 
-    def vectorize_text(self, text) -> pd.DataFrame:
+    def vectorize_text(self, text: str) -> pd.DataFrame:
         inp = tokenizer(text, return_tensors='pt', truncation=True, padding=True, max_length=512)
 
         with torch.no_grad():
             out = model(**inp)
-        
+
         return pd.DataFrame(out.last_hidden_state[:, 0, :])

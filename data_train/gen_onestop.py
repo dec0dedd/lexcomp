@@ -1,21 +1,7 @@
-import pandas as pd
 import os
+
+import pandas as pd
 import numpy as np
-import textstat as ts
-
-import lexicalrichness as lex
-
-import matplotlib.pyplot as plt
-
-import numpy as np
-
-
-"""
-Steps for data preprocessing:
-
-1. Assign constant(?) scores for Elementary/Intermediate/Adv sets
-
-"""
 
 
 # Constants used when translating from classification to regression
@@ -37,6 +23,7 @@ for _, _, files in os.walk(cdir):
             st = ""
             with open(flpth, 'rb+') as fl:
                 st = fl.read().decode('utf-8', errors='ignore')
+                st.replace('\n', ' ')
 
             with open(flpth, 'w') as fl:
                 fl.write(st)
@@ -58,24 +45,7 @@ df['id'] = pd.RangeIndex(start=0, stop=df.shape[0])
 df.set_index('id', inplace=True)
 df.dropna(inplace=True)
 
-# Syntacit features
-df['flesch_reading'] = df['text'].apply(ts.flesch_reading_ease).astype('float64')
-df['dale_chall'] = df['text'].apply(ts.dale_chall_readability_score).astype('float64')
-df['coleman_liau'] = df['text'].apply(ts.coleman_liau_index).astype('float64')
-df['mcalpine_eflaw'] = df['text'].apply(ts.mcalpine_eflaw).astype('float64')
-df['wrd_cnt'] = df['text'].apply(ts.lexicon_count).astype('float64')
-df['sen_cnt'] = df['text'].apply(ts.sentence_count).astype('float64')
-df['syl_cnt'] = df['text'].apply(ts.syllable_count).astype('float64')
-df['polysyl_cnt'] = df['text'].apply(ts.polysyllabcount).astype('float64')
-df['avg_wrd_per_sen'] = df['wrd_cnt'] / df['sen_cnt']
-df['avg_syl_per_wrd'] = df['syl_cnt'] / df['wrd_cnt']
-
-
-# Lexical features
-df['ttr'] = df['text'].apply(lambda x: lex.LexicalRichness(x).ttr)
-df['rttr'] = df['text'].apply(lambda x: lex.LexicalRichness(x).rttr)
-df['cttr'] = df['text'].apply(lambda x: lex.LexicalRichness(x).cttr)
-df['mtld75'] = df['text'].apply(lambda x: lex.LexicalRichness(x).mtld(threshold=0.75))
+df['text'] = df['text'].apply(lambda x: x.replace('\n', ' '))
 
 df = df.sample(n=df.shape[0]//20, random_state=42)
 df.to_csv(os.path.join(cdir, 'clean.csv'), index=True)
