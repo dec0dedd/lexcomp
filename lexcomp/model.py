@@ -26,7 +26,7 @@ class Model():
             self.model = joblib.load(os.path.join(fpath, 'model.joblib'))
         except FileNotFoundError:
             raise FileNotFoundError("Could not find model.joblib file!")
-    
+
     def _get_syntactic(self, text: str):
         df = pd.DataFrame(data={'text': text}, index=[0])
         df['flesch_reading'] = df['text'].apply(ts.flesch_reading_ease).astype('float64')
@@ -57,6 +57,7 @@ class Model():
         return df
 
     def _preprocess_text(self, text: str) -> pd.DataFrame:
+        assert isinstance(text, str)
         df = pd.DataFrame(data={"text": text}, index=[0])
 
         df = pd.concat([df, self._get_syntactic(text), self._get_lexical(text)], axis=1)
@@ -69,6 +70,7 @@ class Model():
         return df
 
     def _preprocess(self, X: pd.DataFrame) -> pd.DataFrame:
+        assert isinstance(X, pd.DataFrame)
         res = pd.DataFrame()
 
         sz = X.shape[0]
@@ -82,6 +84,7 @@ class Model():
         return res
 
     def predict(self, X: pd.DataFrame) -> np.ndarray:
+        assert isinstance(X, pd.DataFrame)
         res = pd.DataFrame()
 
         for txt in X['text']:
@@ -90,7 +93,8 @@ class Model():
         return logistic(self.model.predict(res[booster_cols]), 10, 0.5)
 
     def predict_text(self, text: str):
-        return self.predict(self._preprocess_text(text).drop(columns=['text']))
+        assert isinstance(text, str)
+        return self.predict(self._preprocess_text(text))
 
     def vectorize(self, X: pd.DataFrame) -> pd.DataFrame:
         emb = pd.DataFrame()

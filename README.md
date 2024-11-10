@@ -1,6 +1,10 @@
-# LexComp: Python library for text complexity assessment
+# LexComp: Python library for text complexity analysis
 
-LexComp is a straightforward Python library designed to measure text complexity through various statistics. Currently in its development phase, its functionalities are limited, but future plans include enhancing metrics with transformer models (such as BERT) and incorporating additional metrics.
+LexComp is a quick and easy Python library designed to measure text complexity through various statistics and ML models. Models and metrics are still work in progress so more changes might be introduced in the future.
+
+## How does it work?
+
+LexComp evaluates text complexity by blending DistilBERT embeddings with classic readability metrics and combining them through XGBoost decision trees. DistilBERT helps capture the subtleties of language, while metrics like Flesch-Kincaid add insights on sentence length and word difficulty. Together, they create a well-rounded complexity score that offers a more complete picture of how readable a piece of text really is.
 
 ## Example usage
 
@@ -20,8 +24,8 @@ print(f"Second text's complexity: {mdl.predict_text(text2)[0]}")
 
 The output should be
 ```
-First text's complexity: 0.03551881
-Second text's complexity: 0.5091553
+First text's complexity: 0.7669976353645325
+Second text's complexity: 0.129152312874794
 ```
 
 ## Data sources

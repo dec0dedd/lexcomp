@@ -7,7 +7,7 @@ import numpy as np
 # Constants used when translating from classification to regression
 E_SCORE = 0.1
 I_SCORE = 0.5
-A_SCORE = 0.8
+A_SCORE = 0.7
 
 cdir = os.path.join(os.getcwd(), 'data_train/onestop')
 
