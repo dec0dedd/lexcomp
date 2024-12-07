@@ -7,7 +7,7 @@ lvl2scr = {
     "A1": 0.05,
     "A2": 0.15,
     "B1": 0.3,
-    "B2": 0.6,
+    "B2": 0.5,
     "C1": 0.7,
     "C2": 0.9,
 }
@@ -26,7 +26,7 @@ for _, _, files in os.walk(cdir):
             root = ET.parse(flpth)
 
             txt = ""
-            avg_scr = 0
+            scr_sum = 0
 
             for child in root.iter():
 
@@ -38,9 +38,9 @@ for _, _, files in os.walk(cdir):
                 if ('corresp' in child.attrib):
                     for ch in child.iter():
                         if (ch.tag == 'span'):
-                            avg_scr += lvl2scr[ch.text]
+                            scr_sum += lvl2scr[ch.text]
 
-            dx = pd.DataFrame(data=[[txt, avg_scr/3]], columns=['text', 'target'])
+            dx = pd.DataFrame(data=[[txt, scr_sum/3]], columns=['text', 'target'])
             df = pd.concat([df, dx])
 
 

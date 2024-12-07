@@ -46,8 +46,6 @@ df.set_index('id', inplace=True)
 df.dropna(inplace=True)
 
 df['text'] = df['text'].apply(lambda x: x.replace('\n', ' '))
-
-df = df.sample(n=df.shape[0]//20, random_state=42)
 df.to_csv(os.path.join(cdir, 'clean.csv'), index=True)
 
 print(df)
